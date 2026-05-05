@@ -16,6 +16,24 @@ export function groupGameByDate(jogos) {
   });
 }
 
+export function groupGameByDateAndGroup(jogos, grupo) {
+  const jogosAgrupados = jogos.reduce((acc, jogo) => {
+    const data = jogo.data_brasilia;
+    if (jogo?.grupo?.toLowerCase() === grupo.toLowerCase()) {
+      if (!acc[data]) {
+        acc[data] = [];
+      }
+      acc[data].push(jogo);
+    }
+    return acc;
+  }, {});
+
+  return Object.keys(jogosAgrupados).map((data) => ({
+    title: data,
+    data: sortGameByHorario(jogosAgrupados[data]),
+  }));
+}
+
 function sortGameByHorario(jogosDia) {
   return jogosDia.sort(
     (a, b) => paraMinutos(a.hora_brasilia) - paraMinutos(b.hora_brasilia),

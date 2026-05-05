@@ -12,12 +12,22 @@ import copaData from "./app/assets/data/copaData.json";
 import { useEffect, useState } from "react";
 import { SectionList } from "react-native";
 import DiaCard from "./app/components/DiaCard";
-import { groupGameByDate } from "./app/utils/GroupGames";
+import {
+  groupGameByDate,
+  groupGameByDateAndGroup,
+} from "./app/utils/GroupGames";
 
 export default function App() {
   const [jogos, setJogos] = useState(groupGameByDate(copaData.jogos));
   const [dadosCopa, setDadosCopa] = useState(copaData);
   const [groupSelected, setGroupSelected] = useState();
+  useEffect(() => {
+    if (!groupSelected || groupSelected.trim().groupSelected === 0) {
+      setJogos(groupGameByDate(copaData.jogos));
+    } else {
+      setJogos(groupGameByDateAndGroup(copaData.jogos, groupSelected));
+    }
+  }, [groupSelected]);
   return (
     <ImageBackground
       style={styles.container}

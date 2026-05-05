@@ -5,55 +5,38 @@ import {
   Image,
   ImageBackground,
   FlatList,
+  TextInput,
 } from "react-native";
 import GameCard from "./app/components/GameCard";
 import copaData from "./app/assets/data/copaData.json";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SectionList } from "react-native";
+import DiaCard from "./app/components/DiaCard";
+import { groupGameByDate } from "./app/utils/GroupGames";
 
 export default function App() {
-  const [jogos, setJogos] = useState(copaData.jogos);
+  const [jogos, setJogos] = useState(groupGameByDate(copaData.jogos));
   const [dadosCopa, setDadosCopa] = useState(copaData);
-  const agruparPorData = (jogos) => {
-    return jogos.reduce((acc, jogo) => {
-      const data = jogo.data_brasilia;
-      if (!acc[data]) {
-        acc[data] = [];
-      }
-      acc[data].push(jogo);
-      return acc;
-    }, {});
-  };
-  const jogosAgrupados = agruparPorData(jogos);
-  const jogosTratados = Object.keys(jogosAgrupados).map((data) => {
-    return {
-      title: data,
-      data: jogosAgrupados[data],
-    };
-  });
-
+  const [groupSelected, setGroupSelected] = useState();
   return (
     <ImageBackground
       style={styles.container}
       source={require("./app/assets/bg-overlay.png")}
     >
       <Image style={styles.logo} source={require("./app/assets/unicopa.png")} />
-
+      <TextInput
+        style={{ color: "#fff" }}
+        placeholder="Procurar por grupo"
+        onChangeText={(groupSelected) => setGroupSelected(groupSelected)}
+        value={groupSelected}
+        maxLength={1}
+      />
       <Text style={styles.title}>CALENDÁRIO</Text>
       <SectionList
-        sections={jogosTratados}
+        sections={jogos}
         keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={() => null}
-        renderSectionHeader={({ section }) => (
-          <View style={styles.card}>
-            <Text style={styles.data}>
-              {section.title.split("-").reverse().join("/")}
-            </Text>
-            {section.data.map((jogo) => (
-              <GameCard key={jogo.id} game={jogo} />
-            ))}
-          </View>
-        )}
+        renderSectionHeader={({ section }) => <DiaCard section={section} />}
       />
     </ImageBackground>
   );
@@ -78,20 +61,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "white",
   },
-  card: {
-    marginTop: 20,
-    backgroundColor: "#0c1b2a",
-    width: 320,
-    borderRadius: 12,
-    padding: 15,
-  },
-  data: {
-    color: "#f2cc2f",
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-
   jogo: {
     marginBottom: 20,
     borderBottomWidth: 1,

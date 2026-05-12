@@ -26,7 +26,7 @@ export default function DiaCard({ section }) {
 
 const styles = StyleSheet.create({
   card: {
-    marginBottom: 25,
+    marginTop: 25,
     backgroundColor: "#0c1b2a",
     width: 320,
     borderRadius: 12,

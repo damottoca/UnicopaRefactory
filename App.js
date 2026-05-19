@@ -7,11 +7,13 @@ import {
   SectionList,
   View,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import copaData from "./app/assets/data/copaData.json";
 import { useEffect, useState } from "react";
 import DiaCard from "./app/components/DiaCard";
 import {
+  filtraFavoritos,
   groupGameByDate,
   groupGameByDateAndGroup,
 } from "./app/utils/GroupGames";
@@ -23,6 +25,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [dadosCopa, setDadosCopa] = useState(copaData);
   const [groupSelected, setGroupSelected] = useState("");
+  const [isFilterByFavList, setIsFilterByFavList] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -50,8 +53,12 @@ export default function App() {
         groupGameByDateAndGroup(jogos, groupSelected.toUpperCase()),
       );
     }
+
+    if (isFilterByFavList) {
+      setJogosFiltrados(filtraFavoritos(jogosFil));
+    }
     setIsLoading(false);
-  }, [groupSelected, jogos]);
+  }, [groupSelected, jogos, isFilterByFavList]);
 
   function atualizaJogoMemoria(id) {
     const jogosAtualizados = jogos.map((item) =>
@@ -69,6 +76,24 @@ export default function App() {
     );
   }
 
+  async function inserirUsuario() {
+    const { data, error } = await supabase.from("usuarios").insert([
+      {
+        nome: "Taffe",
+        ra: "600000",
+        email: "teste@teste.com",
+        telefone: "(46) 99999-9999",
+        senha: "123456",
+        data_nascimento: "2001-01-01",
+      },
+    ]);
+    if (!error) {
+      console.log("Sucesso na criação do usuário");
+    } else {
+      console.log("Erro: " + error);
+    }
+  }
+
   return (
     <ImageBackground
       style={styles.container}
@@ -76,6 +101,21 @@ export default function App() {
     >
       <Image style={styles.logo} source={require("./app/assets/unicopa.png")} />
       <Text style={styles.title}>CALENDÁRIO</Text>
+      <TouchableOpacity
+        onPress={() => {
+          setIsFilterByFavList(!isFilterByFavList);
+        }}
+        style={styles.btnFavoritos}
+      >
+        <Image
+          style={[styles.imgFavoritos, isFilterByFavList ? { height: 44 } : {}]}
+          source={
+            isFilterByFavList
+              ? require("./app/assets/listaNormal.png")
+              : require("./app/assets/listaFavorita.png")
+          }
+        />
+      </TouchableOpacity>
       <TextInput
         style={styles.searchGroup}
         placeholderTextColor={"#9c9b9b"}
@@ -152,5 +192,22 @@ const styles = StyleSheet.create({
   txtCarregar: {
     fontSize: 18,
     color: "#fff",
+  },
+  imgFavoritos: {
+    height: 40,
+    width: 40,
+  },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  btnFavoritos: {
+    position: "absolute",
+    top: 120,
+    left: "8%",
+    alignContent: "center",
+    justifyContent: "center",
+    padding: 5,
   },
 });

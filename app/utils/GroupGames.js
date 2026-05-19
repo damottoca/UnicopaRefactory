@@ -4,7 +4,7 @@ export function groupGameByDate(jogos) {
     if (!acc[data]) {
       acc[data] = [];
     }
-    acc[data].push({ ...jogo, isFavorito: false });
+    acc[data].push({ ...jogo });
     return acc;
   }, {});
 
@@ -43,4 +43,17 @@ function sortGameByHorario(jogosDia) {
 function paraMinutos(horario) {
   const [horas, minutos] = horario.split(":");
   return horas * 60 + minutos;
+}
+
+export function filtraFavoritos(diasDeJogos) {
+  return diasDeJogos
+    .map((dia) => {
+      const favoritosDoDia = dia.data.filter((jogo) => jogo?.isfavorito);
+
+      return {
+        title: dia.title,
+        data: sortGameByHorario(favoritosDoDia),
+      };
+    })
+    .filter((dia) => dia.data.length > 0);
 }

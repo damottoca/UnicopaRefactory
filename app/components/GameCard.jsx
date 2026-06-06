@@ -10,6 +10,7 @@ import TimeCard from "./TimeCard";
 import isBrasilGame from "../utils/IsBrasilGame";
 import { useState } from "react";
 import { atualizaFavorito } from "../utils/FavoritaJogo";
+import flagMapping from '../utils/flagMapping'
 
 export default function GameCard({ game, atualizaJogoMemoria }) {
   return (

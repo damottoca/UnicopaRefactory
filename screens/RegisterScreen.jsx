@@ -9,13 +9,13 @@ import {
 
 import { supabase } from "../app/utils/supabase";
 
-export default function LoginScreen({ navigation }) {
+export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  async function login() {
+  async function cadastrar() {
     const { error } =
-      await supabase.auth.signInWithPassword({
+      await supabase.auth.signUp({
         email,
         password: senha,
       });
@@ -25,12 +25,13 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-    navigation.replace("Home");
+    alert("Conta criada!");
+    navigation.goBack();
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Cadastro</Text>
 
       <TextInput
         placeholder="Email"
@@ -49,10 +50,10 @@ export default function LoginScreen({ navigation }) {
 
       <TouchableOpacity
         style={styles.btn}
-        onPress={login}
+        onPress={cadastrar}
       >
         <Text style={{ color: "#fff" }}>
-          Entrar
+          Criar conta
         </Text>
       </TouchableOpacity>
     </View>

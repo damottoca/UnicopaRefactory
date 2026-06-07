@@ -1,11 +1,12 @@
-//npx expo install @supabase/supabase-js expo-sqlite
-//npx expo install @react-native-async-storage/async-storage
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
 
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_KEY;
+
 export const supabase = createClient(
-  process.env.EXPO_PUBLIC_SUPABASE_URL,
-  process.env.EXPO_PUBLIC_SUPABASE_KEY,
+  supabaseUrl,
+  supabaseKey,
   {
     auth: {
       storage: AsyncStorage,
@@ -13,5 +14,5 @@ export const supabase = createClient(
       persistSession: true,
       detectSessionInUrl: false,
     },
-  },
+  }
 );
